@@ -1,0 +1,15 @@
+body {
+  width: 280px;
+}
+.loading img,
+.success img {
+  height: 22px;
+}
+.cross-icon {
+  font-family: inherit;
+  border: 1px solid red;
+  padding: 2px 6px;
+}
+.info-icon {
+  padding: 1px 9px;
+}

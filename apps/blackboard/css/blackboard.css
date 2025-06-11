@@ -1,0 +1,187 @@
+.custom-switch {
+  padding-left: 40px;
+  padding-top: 2px;
+}
+.mpass-text {
+  padding-right: 5px;
+  font-size: 16px;
+}
+.info-text {
+  background: #b9b7b7;
+  padding: 1px 8px;
+  font-size: 13px;
+}
+.main-section {
+  margin-bottom: 20px;
+}
+.mettl-text {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+.check-label {
+  font-size: 1px;
+}
+.check-btn {
+  width: 0 !important;
+}
+.note-txt {
+  background-color: #f7f76d;
+  margin-bottom: 25px;
+}
+.student-section,
+.teacher-section {
+  margin: 20px;
+  height: auto !important;
+  margin-top: 60px;
+  box-shadow: 1px 1px 4px 2px #dedcdc;
+}
+.title-logo {
+  padding: 15px 0;
+  margin: 10px 0;
+}
+.instruction-block {
+  padding: 20px 70px 40px;
+}
+.warning-section {
+  padding: 40px 0 15px;
+}
+.no-record {
+  color: #ea9a09;
+  padding-bottom: 10px;
+}
+.no-record-text {
+  padding-bottom: 25px;
+}
+.table-data,
+.table-report-data,
+.quiz-report-data {
+  padding: 40px;
+  padding-bottom: 20px;
+}
+.reports_text {
+  padding-left: 18px;
+  font-size: 27px;
+  padding-top: 8px;
+}
+.back {
+  padding-left: 30px;
+  margin-top: 20px;
+  width: 100px;
+}
+.course-title {
+  font-size: 20px;
+}
+.quiz-name {
+  color: #0072ff;
+}
+.header-section {
+  padding: 10px 40px 0;
+}
+.warning-icon {
+  font-size: 40px;
+  border: 3px solid #dea70b;
+  padding: 2px 22px;
+  border-radius: 50%;
+  color: #ea9a09;
+}
+.student-modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  padding-top: 70px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.student-modal-content {
+  width: 55% !important;
+  margin: 0 35%;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.closeModal {
+  color: #aaa;
+  text-align: right;
+  display: block;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.data-info {
+  margin: 15px 0;
+}
+.title-heading {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.chat-section {
+  margin: 15px 0;
+}
+#chat-image {
+  width: 300px;
+  margin-bottom: 15px;
+}
+.title-logo {
+  padding: 15px 0;
+  margin: 10px 0;
+}
+.cancel {
+  margin-right: 20px !important;
+}
+.cam-icon {
+  margin-top: 50px;
+}
+.continue-btn {
+  background-color: #2765dae3 !important;
+  border: 1px solid #2765dae3 !important;
+}
+.action-section {
+  margin: 20px 0;
+}
+.info-section {
+  margin: 0 65px;
+  background: #096a9a1a;
+  padding: 15px;
+  border-radius: 3px;
+  border: 1px solid #cac7c7;
+  color: #454f5b;
+}
+#bottom_Submit:disabled {
+  background-color: red;
+}
+p {
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+.mpass-options {
+  margin: 10px !important;
+}
+.open-chat {
+  position: fixed;
+  bottom: 16px;
+  right: 30%;
+  z-index: 9999;
+  width: 0;
+}
+.chat-block {
+  background-color: white;
+  position: fixed;
+  bottom: 55px;
+  right: 20%;
+  width: 285px;
+  border: 3px solid #f1f1f1;
+  z-index: 9999;
+}
