@@ -375,7 +375,7 @@ var $http = new (function () {
     // console.log("$http GET URL:- ", c.url)
     // console.log("$http GET token:- ", c.token)
     customAjax({
-      type: "GET",
+      method: "GET",
       headers: getHeader(c.token),
       url: c.url,
       success: function (d) {
@@ -395,7 +395,7 @@ var $http = new (function () {
     // console.log("$http POST token:- ", c.token)
     // console.log("$http POST data:- ", c.data)
     customAjax({
-      type: "POST",
+      method: "POST",
       headers: getHeader(c.token),
       url: c.url,
       data: c.data,
@@ -538,6 +538,7 @@ function ltiLogin(b, a) {
   let loginURL = b.url;
   $http.Post({ url: loginURL, data: b.formdata, callBack: a });
 }
+
 function createQuiz(b, a) {
   let createQuizendPoint = "/saveQuizSetting";
   let createQuizbaseUrl = b.url;
@@ -822,64 +823,64 @@ function handleOnRequest(c, a, b) {
     switch (c.title) {
       case "showReports":
         fetchReports(c, b);
-        break;
+        return true;
       case "loginlti":
         ltiLogin(c, b);
-        break;
+        return true;
       case "checkDiagonostic":
         checkDiagonostic(c, b);
-        break;
+        return true;
       case "createQuiz":
         createQuiz(c, b);
-        break;
+        return true;
       case "continueQuiz":
         continueQuiz(c, b);
-        break;
+        return true;
       case "saveQuizResult":
         saveQuizResult(c, b);
-        break;
+        return true;
       case "getRegistration":
         getRegistration(c, b);
-        break;
+        return true;
       case "getProctoringUrl":
         getProctoringUrl(c, b);
-        break;
+        return true;
       case "editQuiz":
         editQuiz(c, b);
-        break;
+        return true;
       case "quizVsuser":
         quizVsuser(c, b);
-        break;
+        return true;
       case "quizIndex":
         quizIndex(c, b);
-        break;
+        return true;
       case "userIndex":
         userIndex(c, b);
-        break;
+        return true;
       case "quizSuggestion":
         quizSuggestion(c, b);
-        break;
+        return true;
       case "quizSearchResult":
         quizSearchResult(c, b);
-        break;
+        return true;
       case "userSuggestion":
         userSuggestion(c, b);
-        break;
+        return true;
       case "userSearchResult":
         userSearchResult(c, b);
-        break;
+        return true;
       case "fetchFilteredUsers":
         fetchFilteredUsers(c, b);
-        break;
+        return true;
       case "fetchFailedUsers":
         fetchFailedUsers(c, b);
-        break;
+        return true;
       case "fetchNotApplicableUsers":
         fetchNotApplicableUsers(c, b);
-        break;
+        return true;
       case "disablePlugins":
         disablePluginList(c, b);
-        break;
+        return true;
       default:
         console.log("Invalid message type.");
     }

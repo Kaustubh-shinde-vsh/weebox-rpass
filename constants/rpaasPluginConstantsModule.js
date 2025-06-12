@@ -1,4 +1,4 @@
-console.log("loginService");
+console.log("loginService rpassModule");
 // constants/rpaasPluginConstants.js (or whatever path you prefer, matches manifest)
 
 const loginType = Object.freeze({
