@@ -70,50 +70,43 @@ var teacherViewService = new (function () {
   let isFiltersApplied = false;
   function T(V, Z) {
     $(".main-section").html("");
-    let tableLayout = "";
-    // if (_isCi) {
-    //     tableLayout =
-    //         '<div class="table-report-data"><table id="records-link" class="table table-bordered text-left"><thead><tr><th>User Id</th><th>Activity time</th><th>Credibility Index</th><th>Credibility Score</th><th>Actions</th></tr></thead> <tbody id="linkdata"></tbody></table></div>';
-    // } else {
-    tableLayout =
+
+    let tableLayout =
       '<div class="table-report-data"><table id="records-link" class="table table-bordered text-left"><thead><tr><th>User Id</th><th>Activity time</th><th>Actions</th></tr></thead> <tbody id="linkdata"></tbody></table><div id="myReportModal" class="report-modal"><div class="report-modal-content"><span class="report-close">&times;</span><div id="reportframecontainer"></div></div></div></div>';
-    // }
+
     $(".main-section").append(tableLayout);
+
     for (var W = 0; W < V.length; W++) {
-      var X = "";
-      // if (_isCi) {
-      //     var Y = q(V[W].ciShortData);
-      //     X =
-      //         "<tr><td><span>" +
-      //         V[W].userid +
-      //         "</span></td><td>" +
-      //         V[W].createdDate +
-      //         '</td><td class="ciShortData">' +
-      //         Y.status +
-      //         '</td><td class="ciShortData">' +
-      //         Y.score +
-      //         "</td><td><a href=" +
-      //         V[W].sharedReportUrl +
-      //         ' target="_blank"><span class="eye"></span></a></td></tr>';
-      // } else {
-      X =
+      // Use data attribute instead of inline onclick
+      var X =
         "<tr><td><span>" +
         V[W].userid +
         "</span></td><td>" +
         V[W].createdDate +
-        "</td><td><a onclick=\"openmyReportModal('" +
+        "</td><td><a href='#' class='report-link' data-report-url='" +
         V[W].sharedReportUrl +
-        '\')"><span class="eye"></span></a></td></tr>';
-      // }
+        "'><span class='eye'></span></a></td></tr>";
+
       $("#linkdata").append(X);
-      // $("#linkdata").append('<script type="text/javascript">function openmyReportModal(URL){alert(URL);}</script>');
-      $("#linkdata").append(
-        '<script type="text/javascript">function openmyReportModal(URL){var reportframecontainer = document.getElementById("reportframecontainer");var reportframe = document.createElement("IFRAME");reportframe.setAttribute("style", " width:100%;");reportframe.setAttribute("id", "cameraframe");reportframe.setAttribute("src", URL);reportframe.seamless = true; reportframecontainer.appendChild(reportframe); $("#myReportModal").show();} $(".report-close").click(function(){ $("#myReportModal").hide(); $("#reportframecontainer").html(""); });</script>'
-      );
     }
-    $("#myReportModal .popup-reportmodal").click(function () {
-      alert("clicked");
-    });
+
+    // Set up event delegation for report links
+    $(document)
+      .off("click.reportModal")
+      .on("click.reportModal", ".report-link", function (e) {
+        e.preventDefault();
+        var reportUrl = $(this).data("report-url");
+        openReportModal(reportUrl);
+      });
+
+    // Set up close functionality
+    $(document)
+      .off("click.reportClose")
+      .on("click.reportClose", ".report-close", function () {
+        $("#myReportModal").hide();
+        $("#reportframecontainer").html("");
+      });
+
     $(".pagination-page").find("a").removeClass("active");
     if (Z === 0) {
       $(".pagination-page:first").find("a").addClass("active");
@@ -122,6 +115,20 @@ var teacherViewService = new (function () {
         .find('a[data-quiz-id="' + Z + '"]')
         .addClass("active");
     }
+  }
+  function openReportModal(URL) {
+    var reportframecontainer = document.getElementById("reportframecontainer");
+    // Clear existing content
+    reportframecontainer.innerHTML = "";
+
+    var reportframe = document.createElement("IFRAME");
+    reportframe.setAttribute("style", "width:100%;  border:none;");
+    reportframe.setAttribute("id", "cameraframe");
+    reportframe.setAttribute("src", URL);
+    reportframe.seamless = true;
+
+    reportframecontainer.appendChild(reportframe);
+    $("#myReportModal").show();
   }
 
   function m(V, W, X) {
