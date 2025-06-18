@@ -470,6 +470,7 @@
     {
       "resources": [
         "assets/*.png",
+        "assets/*.PNG",
         "assets/*.mp3",
         "assets/*.svg",
         "assets/*.gif"
