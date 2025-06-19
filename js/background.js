@@ -485,7 +485,7 @@ function getEnabledList(a) {
 }
 function checkMettlPlugins(a) {
   for (var b = 0; b < a.length; b++) {
-    if (a[b].name === "Wheebox RPaaS") {
+    if (a[b].name === "Wheebox RPaaS" || a[b].name === "Wheebox RPaaS v3") {
       chrome.management.setEnabled(a[b].id, true);
       console.log("Wheebox plugin found");
     } else {
