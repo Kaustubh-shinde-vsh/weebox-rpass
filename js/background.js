@@ -341,9 +341,9 @@ function activateTestTab() {
     });
   });
 }
-function setTestTab() {
+function setTestTab(c) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (b) {
-    chrome.storage.local.set({ currentWindow: b[0].windowId, tabid: b[0].id });
+    chrome.storage.local.set({ currentWindow: b[0].windowId, tabid: c.id });
   });
 }
 function deRegisterChromeApis() {
@@ -744,25 +744,27 @@ function fetchNotApplicableUsers(b, a) {
 }
 function handleOnMessage(d, c, a) {
   var b = mpaasConstants.chromeSendMessage;
+  console.log("✌️b chromeSendMessage--->", d);
   if (d.type == "action") {
     switch (d.action) {
       case b.ACTIVATE_TESTTAB:
         activateTestTab();
-        break;
+        return true;
       case b.SET_TESTTAB:
-        setTestTab();
-        break;
+        setTestTab(c?.tab);
+        return true;
       case b.START_PROCTORING:
         startCandidateProctoring();
-        break;
+        return true;
       case b.STOP_PROCTORING:
         shutDownCandidateProctoring();
-        break;
+        return true;
       case b.CLOSE_WINDOW:
         $tab.closeErrorTab();
-        break;
+        return true;
       case b.BLUR:
         chrome.storage.local.get(function (local) {
+          console.log("✌️local in blur case--->", local);
           if (local.lostfocus == undefined) {
             chrome.storage.local.set({ lostfocus: 0 });
             local.lostfocus = 0;
@@ -773,7 +775,7 @@ function handleOnMessage(d, c, a) {
               for (var m = 0; m < tabs.length; m++) {
                 if (!d.focused) {
                   lostcounter = 5;
-                  break;
+                  return true;
                 } else if (
                   tabs[m].active == false &&
                   (tabs[m].id == local.tabid ||
@@ -791,28 +793,28 @@ function handleOnMessage(d, c, a) {
           });
         });
         blurMaximize();
-        break;
+        return true;
       case b.FULL_SCREEN:
         $window.fullScreenWindow();
-        break;
+        return true;
       case b.NC:
         $window.maximizeWindow();
-        break;
+        return true;
       case b.TWOTABS:
         $tab.checkTwoTabs();
-        break;
+        return true;
       case b.CHECKEXAMTABS:
         $tab.checkCheckExamTabs();
-        break;
+        return true;
       case b.DIAGONOSTIC_ERROR_TAB:
         $tab.closeErrorTab();
-        break;
+        return true;
       case b.DIAGONOSTIC_TAB_CLOSE:
         $tab.closeDiagonosticTab();
-        break;
+        return true;
       case b.CLOSE_OTHER_TABS:
         $tab.closeOtherTabs();
-        break;
+        return true;
     }
   } else {
     console.log("handleOnMessage:", d);

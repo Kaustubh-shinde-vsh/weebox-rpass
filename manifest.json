@@ -463,7 +463,9 @@
     "tabs",
     "contentSettings",
     "management",
-    "nativeMessaging"
+    "nativeMessaging",
+    "browsingData",
+    "windows"
   ],
   "host_permissions": ["https://*.wheebox.com/", "<all_urls>"],
   "web_accessible_resources": [

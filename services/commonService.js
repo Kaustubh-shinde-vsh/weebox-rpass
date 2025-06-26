@@ -2298,6 +2298,7 @@ var takeQuizService = new (function () {
   }
   function proctorBackgroundCheck() {
     chrome.storage.local.get(function (local) {
+      console.log("✌️local in proctorBackbroundCheck commonservice--->", local);
       if (local.exam == "start" && local.navigationControl) {
         if (local.lostfocusallowed == undefined) {
           chrome.storage.local.set({ lostfocusallowed: 10 });
