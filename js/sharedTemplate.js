@@ -16,7 +16,7 @@ var sharedTemplate = new (function () {
   function b() {
     return (
       '<div id="testNavigateAwayPopup" class="modal-wrapper"><div class="modal-contents"><div class="text-center mt-0"><img src=' +
-      chrome.runtime.getURL("assets/window.png") +
+      chrome.runtime.getURL("assets/window.PNG") +
       ' alt="window alert image" /></div><div class="title-heading text-center mettl-text text-danger _i18" data-i18="NAV_AWAY_MSG_1"></div><div class="data-section text-center"><div class="text-section"><p class="mettl-text _i18" data-i18="NAV_AWAY_MSG_2"></p><p class="mettl-text _i18" data-i18="NAV_AWAY_MSG_3"></p><p class="mettl-text _i18" data-i18="NAV_AWAY_MSG_4"></p></div></div><div class="action-section text-center"><button class="btn btn-primary continue-btn _i18" id="closeNavigateAwayPopup" data-i18="TEXT_CLOSE_WINDOW"></button></div></div> </div>'
     );
   }
@@ -59,7 +59,7 @@ var sharedTemplate = new (function () {
   function c() {
     return (
       '<div id="otherPluginsPopup" class="modal-wrapper"><div class="modal-contents"><div class="text-center mt-0"><img src=' +
-      chrome.runtime.getURL("assets/window.png") +
+      chrome.runtime.getURL("assets/window.PNG") +
       ' alt="window alert image" /></div><div class="title-heading text-center text-danger mettl-text _i18" data-i18="RESTRICT_PLUGIN_1"></div><div class="text-section"><p class="mettl-text text-center _i18" data-i18="RESTRICT_PLUGIN_2"></p><div class="duplicatedata-section text-danger text-center">Please remove Mettl duplicate plugins</div><div class="plugindata-section"></div><div class="action-section text-center"><button class="btn btn-primary continue-btn _i18" data-i18="RESTRICT_PLUGIN_3" id="retryDisablePlugin"></button></div><div class="text-center"><p class="mettl-text _i18" data-i18="RESTRICT_PLUGIN_4"></p></div> </div>'
     );
   }

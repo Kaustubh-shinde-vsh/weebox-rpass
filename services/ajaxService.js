@@ -25,25 +25,31 @@ export async function customAjax(options) {
   } = options;
 
   let targetUrl = url;
+  const fetchMethod = method.toUpperCase();
+
+  const contentType =
+    headers["Content-Type"] || "application/x-www-form-urlencoded";
+
+  const fetchHeaders = {
+    ...headers,
+    ...(headers["Content-Type"] ? {} : { "Content-Type": contentType }),
+  };
+
+  const fetchOptions = {
+    method: fetchMethod,
+    headers: fetchHeaders,
+  };
 
   try {
-    const fetchOptions = {
-      method: method.toUpperCase(),
-      headers: {
-        // Default to JSON content type, but allow override
-        "Content-Type": "application/json",
-        ...headers,
-      },
-    };
-
-    // Add body for methods that typically send data
-    if (
-      ["POST", "PUT", "PATCH"].includes(fetchOptions.method) &&
-      data !== null
-    ) {
-      fetchOptions.body = JSON.stringify(data);
-    } else if (fetchOptions.method === "GET" && data !== null) {
-      // For GET, append data to URL as query parameters if provided
+    if (["POST", "PUT", "PATCH"].includes(fetchMethod) && data !== null) {
+      if (contentType.includes("application/json")) {
+        fetchOptions.body = data;
+      } else if (contentType.includes("application/x-www-form-urlencoded")) {
+        fetchOptions.body = new URLSearchParams(data).toString();
+      } else {
+        fetchOptions.body = data;
+      }
+    } else if (fetchMethod === "GET" && data !== null) {
       const queryString = new URLSearchParams(data).toString();
       targetUrl = `${url}?${queryString}`;
     }
@@ -51,7 +57,6 @@ export async function customAjax(options) {
     const response = await fetch(targetUrl, fetchOptions);
 
     if (!response.ok) {
-      // If response is not 2xx, throw an error
       const errorBody = await response.text();
       const err = new Error(
         `HTTP Error: ${response.status} ${response.statusText}`
@@ -65,32 +70,23 @@ export async function customAjax(options) {
     let responseData;
     if (dataType === "json") {
       responseData = await response.json();
-    } else if (dataType === "text") {
-      responseData = await response.text();
     } else {
-      // Fallback if dataType is unknown
       responseData = await response.text();
     }
 
-    if (success && typeof success === "function") {
-      success(responseData, response.statusText, response);
-    }
+    success?.(responseData, response.statusText, response);
     return responseData;
   } catch (err) {
     console.error("customAjax error:", err);
-    if (error && typeof error === "function") {
-      // Mimic $.ajax error signature (jqXHR, textStatus, errorThrown)
-      // We pass a simplified error object, status text, and the error itself
-      error(
-        {
-          status: err.status,
-          statusText: err.statusText,
-          responseText: err.responseText,
-        },
-        err.statusText || "error",
-        err
-      );
-    }
+    error?.(
+      {
+        status: err.status || 0,
+        statusText: err.statusText || "Network Error",
+        responseText: err.responseText || err.message,
+      },
+      err.statusText || "error",
+      err
+    );
     throw err;
   }
 }

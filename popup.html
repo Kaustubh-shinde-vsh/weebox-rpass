@@ -1,71 +1,89 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Wheebox RPaaS Plugin</title>
-        <base href="/">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="icon" type="image/x-icon" href="favicon.ico">
-        <link rel="stylesheet" href="css/popup.css">
-        <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
-    </head>
+  <head>
+    <meta charset="utf-8" />
+    <title>Wheebox RPaaS Plugin</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/popup.css" />
+    <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css" />
+  </head>
 
-    <body>
-        <nav class="navbar my-2">
-            <span class="navbar-brand mx-auto">
-                <img class="navbar-logo" src="../assets/logo.png" alt="logo">
-            </span>
-        </nav>
-        <div class="action-section my-5 text-center">
-            <div class="login" id="login">
-                <span class="text-danger rounded-circle cross-icon font-weight-bold">X</span>&nbsp;<span class="text-danger">You are not logged in</span><br>
-                <span class="text-danger">Please click on RPaaS tool in your course to login</span>
-            </div>
-            <div class="loading d-none" id="loading">
-                <img src="../assets/loading.gif" alt="loading"> logging you in.
-            </div>
-            <div class="success d-none" id="success">
-                <img src="../assets/bluetick.jpg" alt="tick">
-                <span class="text-info">Login Successful.</span>
-                <div class="logout-section">
-                    <button type="button" id="logout" class="btn btn-outline-danger mt-3">logout</button>
-                </div>
-            </div>
-
-             <div class="success d-none" id="studentSuccess">
-                <img src="../assets/bluetick.jpg" alt="tick">
-                <span class="text-info">Login Successful.</span>
-            </div>
-
-            <div class="lti-check d-none" id="lti-check">
-                <span class="text-white bg-warning rounded-circle info-icon font-weight-bold">i</span>&nbsp;
-                <span class="text-warning">Lti Tool is not Present</span><br>
-                <span class="text-info">Contact your Administrator</span>
-            </div>
-
-            <div class="login-fail d-none" id="LoginFail">
-                <span class="text-white bg-warning rounded-circle info-icon font-weight-bold">i</span>&nbsp;
-                <span class="text-warning">Login Failed</span>
-            </div>
-
-            <div class="token-check d-none" id="token-check">
-                <span class="text-white bg-warning rounded-circle info-icon font-weight-bold">i</span>&nbsp;
-                <span class="text-warning">Session Expired</span><br>
-                <span class="text-warning">Please click on RPaas tool in your course to login</span>
-            </div>
+  <body>
+    <nav class="navbar my-2">
+      <span class="navbar-brand mx-auto">
+        <img class="navbar-logo" src="../assets/logo.png" alt="logo" />
+      </span>
+    </nav>
+    <div class="action-section my-5 text-center">
+      <div class="login" id="login">
+        <span class="text-danger rounded-circle cross-icon font-weight-bold"
+          >X</span
+        >&nbsp;<span class="text-danger">You are not logged in</span><br />
+        <span class="text-danger"
+          >Please click on RPaaS tool in your course to login</span
+        >
+      </div>
+      <div class="loading d-none" id="loading">
+        <img src="../assets/loading.gif" alt="loading" /> logging you in.
+      </div>
+      <div class="success d-none" id="success">
+        <img src="../assets/bluetick.jpg" alt="tick" />
+        <span class="text-info">Login Successful.</span>
+        <div class="logout-section">
+          <button type="button" id="logout" class="btn btn-outline-danger mt-3">
+            logout
+          </button>
         </div>
-        <!-- <div class="border-top bg-light p-3">
+      </div>
+
+      <div class="success d-none" id="studentSuccess">
+        <img src="../assets/bluetick.jpg" alt="tick" />
+        <span class="text-info">Login Successful.</span>
+      </div>
+
+      <div class="lti-check d-none" id="lti-check">
+        <span
+          class="text-white bg-warning rounded-circle info-icon font-weight-bold"
+          >i</span
+        >&nbsp; <span class="text-warning">Lti Tool is not Present</span><br />
+        <span class="text-info">Contact your Administrator</span>
+      </div>
+
+      <div class="login-fail d-none" id="LoginFail">
+        <span
+          class="text-white bg-warning rounded-circle info-icon font-weight-bold"
+          >i</span
+        >&nbsp;
+        <span class="text-warning">Login Failed</span>
+      </div>
+
+      <div class="token-check d-none" id="token-check">
+        <span
+          class="text-white bg-warning rounded-circle info-icon font-weight-bold"
+          >i</span
+        >&nbsp; <span class="text-warning">Session Expired</span><br />
+        <span class="text-warning"
+          >Please click on RPaas tool in your course to login</span
+        >
+      </div>
+    </div>
+    <!-- <div class="border-top bg-light p-3">
             <a href="javascript:void(0)" class="text-info">Report a problem</a>
             <a href="javascript:void(0)" class="text-info float-right">Settings</a>
         </div> -->
 
-        <script src="plugins/bootstrap/js/jquery.min.js"></script>
-        <script src="plugins/bootstrap/js/popper.min.js"></script>
-        <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
-        <script src="constants/rpaasPluginConstantsModule.js" type="module"></script>
-        <script src="services/ajaxServices.js" type="module"></script>
-        <script src="js/popup.js"></script>
-        <script src="js/background.js" type="module"></script>
-        <!-- <script src="constants/rpaasPluginConstants.js"></script> -->
-    </body>
+    <script src="plugins/bootstrap/js/jquery.min.js"></script>
+    <script src="plugins/bootstrap/js/popper.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script
+      src="constants/rpaasPluginConstantsModule.js"
+      type="module"
+    ></script>
+    <script src="services/ajaxService.js" type="module"></script>
+    <script src="constants/rpaasPluginConstants.js"></script>
+    <script src="js/popup.js"></script>
+    <script src="js/background.js" type="module"></script>
+  </body>
 </html>

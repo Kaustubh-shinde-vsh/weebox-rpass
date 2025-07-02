@@ -70,50 +70,43 @@ var teacherViewService = new (function () {
   let isFiltersApplied = false;
   function T(V, Z) {
     $(".main-section").html("");
-    let tableLayout = "";
-    // if (_isCi) {
-    //     tableLayout =
-    //         '<div class="table-report-data"><table id="records-link" class="table table-bordered text-left"><thead><tr><th>User Id</th><th>Activity time</th><th>Credibility Index</th><th>Credibility Score</th><th>Actions</th></tr></thead> <tbody id="linkdata"></tbody></table></div>';
-    // } else {
-    tableLayout =
+
+    let tableLayout =
       '<div class="table-report-data"><table id="records-link" class="table table-bordered text-left"><thead><tr><th>User Id</th><th>Activity time</th><th>Actions</th></tr></thead> <tbody id="linkdata"></tbody></table><div id="myReportModal" class="report-modal"><div class="report-modal-content"><span class="report-close">&times;</span><div id="reportframecontainer"></div></div></div></div>';
-    // }
+
     $(".main-section").append(tableLayout);
+
     for (var W = 0; W < V.length; W++) {
-      var X = "";
-      // if (_isCi) {
-      //     var Y = q(V[W].ciShortData);
-      //     X =
-      //         "<tr><td><span>" +
-      //         V[W].userid +
-      //         "</span></td><td>" +
-      //         V[W].createdDate +
-      //         '</td><td class="ciShortData">' +
-      //         Y.status +
-      //         '</td><td class="ciShortData">' +
-      //         Y.score +
-      //         "</td><td><a href=" +
-      //         V[W].sharedReportUrl +
-      //         ' target="_blank"><span class="eye"></span></a></td></tr>';
-      // } else {
-      X =
+      // Use data attribute instead of inline onclick
+      var X =
         "<tr><td><span>" +
         V[W].userid +
         "</span></td><td>" +
         V[W].createdDate +
-        "</td><td><a onclick=\"openmyReportModal('" +
+        "</td><td><a href='#' class='report-link' data-report-url='" +
         V[W].sharedReportUrl +
-        '\')"><span class="eye"></span></a></td></tr>';
-      // }
+        "'><span class='eye'></span></a></td></tr>";
+
       $("#linkdata").append(X);
-      // $("#linkdata").append('<script type="text/javascript">function openmyReportModal(URL){alert(URL);}</script>');
-      $("#linkdata").append(
-        '<script type="text/javascript">function openmyReportModal(URL){var reportframecontainer = document.getElementById("reportframecontainer");var reportframe = document.createElement("IFRAME");reportframe.setAttribute("style", " width:100%;");reportframe.setAttribute("id", "cameraframe");reportframe.setAttribute("src", URL);reportframe.seamless = true; reportframecontainer.appendChild(reportframe); $("#myReportModal").show();} $(".report-close").click(function(){ $("#myReportModal").hide(); $("#reportframecontainer").html(""); });</script>'
-      );
     }
-    $("#myReportModal .popup-reportmodal").click(function () {
-      alert("clicked");
-    });
+
+    // Set up event delegation for report links
+    $(document)
+      .off("click.reportModal")
+      .on("click.reportModal", ".report-link", function (e) {
+        e.preventDefault();
+        var reportUrl = $(this).data("report-url");
+        openReportModal(reportUrl);
+      });
+
+    // Set up close functionality
+    $(document)
+      .off("click.reportClose")
+      .on("click.reportClose", ".report-close", function () {
+        $("#myReportModal").hide();
+        $("#reportframecontainer").html("");
+      });
+
     $(".pagination-page").find("a").removeClass("active");
     if (Z === 0) {
       $(".pagination-page:first").find("a").addClass("active");
@@ -122,6 +115,20 @@ var teacherViewService = new (function () {
         .find('a[data-quiz-id="' + Z + '"]')
         .addClass("active");
     }
+  }
+  function openReportModal(URL) {
+    var reportframecontainer = document.getElementById("reportframecontainer");
+    // Clear existing content
+    reportframecontainer.innerHTML = "";
+
+    var reportframe = document.createElement("IFRAME");
+    reportframe.setAttribute("style", "width:100%;  border:none;");
+    reportframe.setAttribute("id", "cameraframe");
+    reportframe.setAttribute("src", URL);
+    reportframe.seamless = true;
+
+    reportframecontainer.appendChild(reportframe);
+    $("#myReportModal").show();
   }
 
   function m(V, W, X) {
@@ -1734,71 +1741,189 @@ var takeQuizService = new (function () {
     chrome.storage.local.get(["navigationControl"], function (B) {
       if (B.navigationControl) {
         console.log("Key's Disabled");
+
+        // Prevent copy, cut, paste
         $(document).bind("cut copy paste", function (C) {
           C.preventDefault();
         });
-        if (document.layers) {
-          document.captureEvents(Event.MOUSEDOWN);
-          document.onmousedown = v;
-        } else {
-          document.onmouseup = v;
-          document.oncontextmenu = a;
-        }
-        document.oncontextmenu = new Function("return false");
-        document.onkeydown = function (C) {
-          return C.ctrlKey &&
-            (C.keyCode === 67 ||
-              C.keyCode === 86 ||
-              C.keyCode === 85 ||
-              C.keyCode === 117)
-            ? false
-            : true;
-        };
-        $(document).keypress("u", function (C) {
-          return C.ctrlKey ? false : true;
+
+        // UPDATED: Modern context menu prevention
+        $(document).on("contextmenu", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          toast.error(l); // Your existing error message variable
+          return false;
         });
+
+        // UPDATED: Prevent right mouse button events
+        $(document).on("mousedown mouseup", function (e) {
+          if (e.button === 2) {
+            // Right mouse button
+            e.preventDefault();
+            e.stopPropagation();
+            toast.error(l);
+            return false;
+          }
+        });
+
+        // UPDATED: Prevent auxiliary click (middle/right click)
+        $(document).on("auxclick", function (e) {
+          if (e.button === 2) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        });
+
+        // Vanilla JS backup for context menu prevention
+        document.addEventListener(
+          "contextmenu",
+          function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          },
+          true
+        );
+
+        // Override any existing context menu handlers
+        document.oncontextmenu = function (e) {
+          e.preventDefault();
+          toast.error(l);
+          return false;
+        };
+
+        // Enhanced keyboard restrictions - UPDATED to use modern key properties
+        document.onkeydown = function (C) {
+          // F12 - Developer Tools
+          if (C.key === "F12") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Context Menu key
+          if (C.key === "ContextMenu") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Shift + F10 (alternative context menu)
+          if (C.shiftKey && C.key === "F10") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Ctrl+Shift+I - Developer Tools
+          if (C.ctrlKey && C.shiftKey && C.key === "I") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Ctrl+U - View Source
+          if (C.ctrlKey && C.key === "u") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Original keyboard restrictions using modern key property
+          if (C.ctrlKey && ["c", "v", "u"].includes(C.key.toLowerCase())) {
+            C.preventDefault();
+            return false;
+          }
+
+          return true;
+        };
+
+        // UPDATED: Modern keypress handler
+        $(document).on("keypress", function (C) {
+          if (C.ctrlKey && C.key.toLowerCase() === "u") {
+            C.preventDefault();
+            return false;
+          }
+          return true;
+        });
+
         const A = function () {
           var C = "keys disabled";
           navigator.clipboard.writeText(C);
         };
+
+        // UPDATED: Modern keyup handler for Print Screen detection
         $(window)
           .add($("iframe").contents().find("body"))
           .keyup(function (C) {
-            if (C.keyCode == 44) {
-              setTimeout(A(), 1000);
+            if (C.key === "PrintScreen") {
+              setTimeout(A, 1000); // Fixed: removed () from A()
             }
           });
+
         document.body.addEventListener("keydown", function (C) {
           if (
             (C.ctrlKey || C.metaKey) &&
-            "dcvxspwuazonkfg".indexOf(C.key) !== -1
+            "dcvxspwuazonkfg".indexOf(C.key.toLowerCase()) !== -1
           ) {
             C.preventDefault();
           }
         });
+
+        // Handle iframes with delay
         setTimeout(function () {
           var E = $("iframe");
           var D = E.contents();
           var C = D.find("body").attr("oncontextmenu", "return false");
+
+          // Apply context menu prevention to iframes
+          $("iframe")
+            .contents()
+            .find("body")
+            .on("contextmenu", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            });
+
           $("iframe")
             .contents()
             .find("body")
             .on("keydown", function (F) {
               if (
                 (F.ctrlKey || F.metaKey) &&
-                "dcvxspwuaonkfg".indexOf(F.key) !== -1
+                "dcvxspwuaonkfg".indexOf(F.key.toLowerCase()) !== -1
               ) {
                 F.preventDefault();
               }
             });
+
           $(window)
             .add($("iframe").contents().find("body"))
             .keyup(function (F) {
-              if (F.keyCode == 44) {
-                setTimeout(A(), 1000);
+              if (F.key === "PrintScreen") {
+                setTimeout(A, 1000); // Fixed: removed () from A()
               }
             });
         }, 5000);
+
+        // Additional prevention for dynamically added content
+        const observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.type === "childList") {
+              mutation.addedNodes.forEach(function (node) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                  $(node).on("contextmenu", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  });
+                }
+              });
+            }
+          });
+        });
+
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
       } else {
         console.log("key's Enabled");
       }
@@ -2291,6 +2416,7 @@ var takeQuizService = new (function () {
   }
   function proctorBackgroundCheck() {
     chrome.storage.local.get(function (local) {
+      console.log("✌️local in proctorBackbroundCheck commonservice--->", local);
       if (local.exam == "start" && local.navigationControl) {
         if (local.lostfocusallowed == undefined) {
           chrome.storage.local.set({ lostfocusallowed: 10 });

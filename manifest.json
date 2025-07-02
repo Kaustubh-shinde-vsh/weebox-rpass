@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Wheebox RPaaS",
+  "name": "Wheebox RPaaS v3",
   "version": "1.0.8",
   "description": "Extension to proctor candidate",
   "icons": {
@@ -9,16 +9,10 @@
     "128": "assets/wheebox128.png"
   },
   "background": {
-    // V3: 'scripts' replaced by 'service_worker' and 'persistent' is removed
     "service_worker": "js/background.js",
     "type": "module"
-    // Note: jquery.min.js and rpaasPluginConstants.js will need to be imported
-    // inside background_service_worker.js if they are truly needed there.
-    // Service workers run in a different context and cannot execute DOM manipulation.
-    // If jquery.min.js was only for DOM manipulation, it should be removed from background.
   },
   "action": {
-    // V3: 'browser_action' is renamed to 'action'
     "default_icon": "assets/wheebox48.png",
     "default_popup": "popup.html",
     "default_title": "Wheebox RPaaS"
@@ -31,8 +25,6 @@
         "apps/canvas/css/canvas.css"
       ],
       "js": [
-        // V3: jQuery.min.js should be careful here. If it modifies the page, it's fine.
-        // If it was for background scripts, move it to service worker import.
         "plugins/bootstrap/js/jquery.min.js",
         "plugins/toast/js/toast.js",
         "constants/rpaasPluginConstants.js",
@@ -41,9 +33,6 @@
         "services/commonService.js",
         "apps/canvas/js/teacherView.js"
       ],
-      // V3: 'include_globs' are deprecated, 'matches' are preferred and more flexible.
-      // Combining 'include_globs' logic directly into 'matches' where possible.
-      // Given the specific nature of these patterns, 'matches' should handle them.
       "matches": ["*://*:*/courses/*/quizzes/*/edit"]
     },
     {
@@ -184,18 +173,7 @@
         "js/checkNavigatedPage.js",
         "js/navigationOff.js"
       ],
-      // V3: '<all_urls>' cannot be used directly in 'matches' within content_scripts.
-      // You must use 'all_frames' and/or include specific match patterns, or apply 'scripting' permissions
-      // and inject programmatically. Given the original 'exclude_matches', this suggests it's for broad pages.
-      // For broad page injections while excluding specific ones, you often need to define specific
-      // match patterns or request 'host_permissions' for all possible hosts and then use conditional
-      // logic inside your content script to check window.location.href, or use `scripting` API.
-      // For simplicity here, I'm keeping 'all_urls' in host_permissions and adding a very broad match pattern
-      // to this content script entry, but this might need refinement based on exact exclusion logic.
-      // If the intent is truly ALL urls EXCEPT the excluded, a programmatic injection from the
-      // service worker using chrome.scripting.executeScript after URL checks might be better.
-      "matches": ["<all_urls>"], // This will require "host_permissions": ["<all_urls>"]
-      // "exclude_matches" is still valid in V3.
+      "matches": ["<all_urls>"],
       "exclude_matches": [
         "*://*/mod/quiz/summary.php*",
         "*://*/mod/quiz/review.php*",
@@ -480,39 +458,25 @@
       ]
     }
   ],
-  // V3: 'content_security_policy' is much stricter by default.
-  // 'unsafe-eval' is no longer allowed for script-src unless it's only for sandboxed pages.
-  // You might need to refactor code that uses eval() or new Function().
-  // It's generally recommended to remove this line unless you specifically need to relax default CSP
-  // and understand the security implications. For standard extensions, the default CSP is usually sufficient.
-  // I've removed it for strict V3 compliance, assuming no 'eval' is used for content scripts.
-  // If 'unsafe-eval' is critical for a specific script (e.g., jQuery plugins using it), you must use
-  // a sandboxed iframe or refactor that code.
-  // "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'", // REMOVED/REFACTORED
-
-  // V3: Permissions are stricter.
-  // Host permissions need to be explicitly listed.
-  // '<all_urls>' is moved to 'host_permissions'.
-  "permissions": ["storage", "tabs", "contentSettings", "management"],
-  "host_permissions": [
-    "https://*.wheebox.com/",
-    // Adding <all_urls> to cover the broad matching in content_scripts.
-    // This is a powerful permission and should be used cautiously.
-    // Consider narrowing down specific host patterns if possible.
-    "<all_urls>"
+  "permissions": [
+    "storage",
+    "tabs",
+    "contentSettings",
+    "management",
+    "nativeMessaging",
+    "browsingData",
+    "windows"
   ],
-  // V3: 'web_accessible_resources' is now an array of objects with 'resources' and 'matches' keys.
-  // 'matches' specifies which origins can access the resources.
+  "host_permissions": ["https://*.wheebox.com/", "<all_urls>"],
   "web_accessible_resources": [
     {
       "resources": [
         "assets/*.png",
+        "assets/*.PNG",
         "assets/*.mp3",
         "assets/*.svg",
         "assets/*.gif"
       ],
-      // Allow all origins that the content scripts match to access these resources.
-      // This is a broad match, you might want to narrow it down if possible.
       "matches": ["<all_urls>"]
     }
   ]

@@ -341,9 +341,9 @@ function activateTestTab() {
     });
   });
 }
-function setTestTab() {
+function setTestTab(c) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (b) {
-    chrome.storage.local.set({ currentWindow: b[0].windowId, tabid: b[0].id });
+    chrome.storage.local.set({ currentWindow: b[0].windowId, tabid: c.id });
   });
 }
 function deRegisterChromeApis() {
@@ -375,7 +375,7 @@ var $http = new (function () {
     // console.log("$http GET URL:- ", c.url)
     // console.log("$http GET token:- ", c.token)
     customAjax({
-      type: "GET",
+      method: "GET",
       headers: getHeader(c.token),
       url: c.url,
       success: function (d) {
@@ -395,7 +395,7 @@ var $http = new (function () {
     // console.log("$http POST token:- ", c.token)
     // console.log("$http POST data:- ", c.data)
     customAjax({
-      type: "POST",
+      method: "POST",
       headers: getHeader(c.token),
       url: c.url,
       data: c.data,
@@ -485,7 +485,7 @@ function getEnabledList(a) {
 }
 function checkMettlPlugins(a) {
   for (var b = 0; b < a.length; b++) {
-    if (a[b].name === "Wheebox RPaaS") {
+    if (a[b].name === "Wheebox RPaaS" || a[b].name === "Wheebox RPaaS v3") {
       chrome.management.setEnabled(a[b].id, true);
       console.log("Wheebox plugin found");
     } else {
@@ -538,6 +538,7 @@ function ltiLogin(b, a) {
   let loginURL = b.url;
   $http.Post({ url: loginURL, data: b.formdata, callBack: a });
 }
+
 function createQuiz(b, a) {
   let createQuizendPoint = "/saveQuizSetting";
   let createQuizbaseUrl = b.url;
@@ -743,13 +744,14 @@ function fetchNotApplicableUsers(b, a) {
 }
 function handleOnMessage(d, c, a) {
   var b = mpaasConstants.chromeSendMessage;
+  console.log("✌️b chromeSendMessage--->", d);
   if (d.type == "action") {
     switch (d.action) {
       case b.ACTIVATE_TESTTAB:
         activateTestTab();
         break;
       case b.SET_TESTTAB:
-        setTestTab();
+        setTestTab(c?.tab);
         break;
       case b.START_PROCTORING:
         startCandidateProctoring();
@@ -762,6 +764,7 @@ function handleOnMessage(d, c, a) {
         break;
       case b.BLUR:
         chrome.storage.local.get(function (local) {
+          console.log("✌️local in blur case--->", local);
           if (local.lostfocus == undefined) {
             chrome.storage.local.set({ lostfocus: 0 });
             local.lostfocus = 0;
@@ -822,64 +825,64 @@ function handleOnRequest(c, a, b) {
     switch (c.title) {
       case "showReports":
         fetchReports(c, b);
-        break;
+        return true;
       case "loginlti":
         ltiLogin(c, b);
-        break;
+        return true;
       case "checkDiagonostic":
         checkDiagonostic(c, b);
-        break;
+        return true;
       case "createQuiz":
         createQuiz(c, b);
-        break;
+        return true;
       case "continueQuiz":
         continueQuiz(c, b);
-        break;
+        return true;
       case "saveQuizResult":
         saveQuizResult(c, b);
-        break;
+        return true;
       case "getRegistration":
         getRegistration(c, b);
-        break;
+        return true;
       case "getProctoringUrl":
         getProctoringUrl(c, b);
-        break;
+        return true;
       case "editQuiz":
         editQuiz(c, b);
-        break;
+        return true;
       case "quizVsuser":
         quizVsuser(c, b);
-        break;
+        return true;
       case "quizIndex":
         quizIndex(c, b);
-        break;
+        return true;
       case "userIndex":
         userIndex(c, b);
-        break;
+        return true;
       case "quizSuggestion":
         quizSuggestion(c, b);
-        break;
+        return true;
       case "quizSearchResult":
         quizSearchResult(c, b);
-        break;
+        return true;
       case "userSuggestion":
         userSuggestion(c, b);
-        break;
+        return true;
       case "userSearchResult":
         userSearchResult(c, b);
-        break;
+        return true;
       case "fetchFilteredUsers":
         fetchFilteredUsers(c, b);
-        break;
+        return true;
       case "fetchFailedUsers":
         fetchFailedUsers(c, b);
-        break;
+        return true;
       case "fetchNotApplicableUsers":
         fetchNotApplicableUsers(c, b);
-        break;
+        return true;
       case "disablePlugins":
         disablePluginList(c, b);
-        break;
+        return true;
       default:
         console.log("Invalid message type.");
     }
