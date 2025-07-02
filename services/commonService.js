@@ -1741,71 +1741,189 @@ var takeQuizService = new (function () {
     chrome.storage.local.get(["navigationControl"], function (B) {
       if (B.navigationControl) {
         console.log("Key's Disabled");
+
+        // Prevent copy, cut, paste
         $(document).bind("cut copy paste", function (C) {
           C.preventDefault();
         });
-        if (document.layers) {
-          document.captureEvents(Event.MOUSEDOWN);
-          document.onmousedown = v;
-        } else {
-          document.onmouseup = v;
-          document.oncontextmenu = a;
-        }
-        document.oncontextmenu = new Function("return false");
-        document.onkeydown = function (C) {
-          return C.ctrlKey &&
-            (C.keyCode === 67 ||
-              C.keyCode === 86 ||
-              C.keyCode === 85 ||
-              C.keyCode === 117)
-            ? false
-            : true;
-        };
-        $(document).keypress("u", function (C) {
-          return C.ctrlKey ? false : true;
+
+        // UPDATED: Modern context menu prevention
+        $(document).on("contextmenu", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          toast.error(l); // Your existing error message variable
+          return false;
         });
+
+        // UPDATED: Prevent right mouse button events
+        $(document).on("mousedown mouseup", function (e) {
+          if (e.button === 2) {
+            // Right mouse button
+            e.preventDefault();
+            e.stopPropagation();
+            toast.error(l);
+            return false;
+          }
+        });
+
+        // UPDATED: Prevent auxiliary click (middle/right click)
+        $(document).on("auxclick", function (e) {
+          if (e.button === 2) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          }
+        });
+
+        // Vanilla JS backup for context menu prevention
+        document.addEventListener(
+          "contextmenu",
+          function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+          },
+          true
+        );
+
+        // Override any existing context menu handlers
+        document.oncontextmenu = function (e) {
+          e.preventDefault();
+          toast.error(l);
+          return false;
+        };
+
+        // Enhanced keyboard restrictions - UPDATED to use modern key properties
+        document.onkeydown = function (C) {
+          // F12 - Developer Tools
+          if (C.key === "F12") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Context Menu key
+          if (C.key === "ContextMenu") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Shift + F10 (alternative context menu)
+          if (C.shiftKey && C.key === "F10") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Ctrl+Shift+I - Developer Tools
+          if (C.ctrlKey && C.shiftKey && C.key === "I") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Ctrl+U - View Source
+          if (C.ctrlKey && C.key === "u") {
+            C.preventDefault();
+            return false;
+          }
+
+          // Original keyboard restrictions using modern key property
+          if (C.ctrlKey && ["c", "v", "u"].includes(C.key.toLowerCase())) {
+            C.preventDefault();
+            return false;
+          }
+
+          return true;
+        };
+
+        // UPDATED: Modern keypress handler
+        $(document).on("keypress", function (C) {
+          if (C.ctrlKey && C.key.toLowerCase() === "u") {
+            C.preventDefault();
+            return false;
+          }
+          return true;
+        });
+
         const A = function () {
           var C = "keys disabled";
           navigator.clipboard.writeText(C);
         };
+
+        // UPDATED: Modern keyup handler for Print Screen detection
         $(window)
           .add($("iframe").contents().find("body"))
           .keyup(function (C) {
-            if (C.keyCode == 44) {
-              setTimeout(A(), 1000);
+            if (C.key === "PrintScreen") {
+              setTimeout(A, 1000); // Fixed: removed () from A()
             }
           });
+
         document.body.addEventListener("keydown", function (C) {
           if (
             (C.ctrlKey || C.metaKey) &&
-            "dcvxspwuazonkfg".indexOf(C.key) !== -1
+            "dcvxspwuazonkfg".indexOf(C.key.toLowerCase()) !== -1
           ) {
             C.preventDefault();
           }
         });
+
+        // Handle iframes with delay
         setTimeout(function () {
           var E = $("iframe");
           var D = E.contents();
           var C = D.find("body").attr("oncontextmenu", "return false");
+
+          // Apply context menu prevention to iframes
+          $("iframe")
+            .contents()
+            .find("body")
+            .on("contextmenu", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            });
+
           $("iframe")
             .contents()
             .find("body")
             .on("keydown", function (F) {
               if (
                 (F.ctrlKey || F.metaKey) &&
-                "dcvxspwuaonkfg".indexOf(F.key) !== -1
+                "dcvxspwuaonkfg".indexOf(F.key.toLowerCase()) !== -1
               ) {
                 F.preventDefault();
               }
             });
+
           $(window)
             .add($("iframe").contents().find("body"))
             .keyup(function (F) {
-              if (F.keyCode == 44) {
-                setTimeout(A(), 1000);
+              if (F.key === "PrintScreen") {
+                setTimeout(A, 1000); // Fixed: removed () from A()
               }
             });
         }, 5000);
+
+        // Additional prevention for dynamically added content
+        const observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.type === "childList") {
+              mutation.addedNodes.forEach(function (node) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                  $(node).on("contextmenu", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                  });
+                }
+              });
+            }
+          });
+        });
+
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
       } else {
         console.log("key's Enabled");
       }

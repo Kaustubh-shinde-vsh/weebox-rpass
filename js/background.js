@@ -749,19 +749,19 @@ function handleOnMessage(d, c, a) {
     switch (d.action) {
       case b.ACTIVATE_TESTTAB:
         activateTestTab();
-        return true;
+        break;
       case b.SET_TESTTAB:
         setTestTab(c?.tab);
-        return true;
+        break;
       case b.START_PROCTORING:
         startCandidateProctoring();
-        return true;
+        break;
       case b.STOP_PROCTORING:
         shutDownCandidateProctoring();
-        return true;
+        break;
       case b.CLOSE_WINDOW:
         $tab.closeErrorTab();
-        return true;
+        break;
       case b.BLUR:
         chrome.storage.local.get(function (local) {
           console.log("✌️local in blur case--->", local);
@@ -775,7 +775,7 @@ function handleOnMessage(d, c, a) {
               for (var m = 0; m < tabs.length; m++) {
                 if (!d.focused) {
                   lostcounter = 5;
-                  return true;
+                  break;
                 } else if (
                   tabs[m].active == false &&
                   (tabs[m].id == local.tabid ||
@@ -793,28 +793,28 @@ function handleOnMessage(d, c, a) {
           });
         });
         blurMaximize();
-        return true;
+        break;
       case b.FULL_SCREEN:
         $window.fullScreenWindow();
-        return true;
+        break;
       case b.NC:
         $window.maximizeWindow();
-        return true;
+        break;
       case b.TWOTABS:
         $tab.checkTwoTabs();
-        return true;
+        break;
       case b.CHECKEXAMTABS:
         $tab.checkCheckExamTabs();
-        return true;
+        break;
       case b.DIAGONOSTIC_ERROR_TAB:
         $tab.closeErrorTab();
-        return true;
+        break;
       case b.DIAGONOSTIC_TAB_CLOSE:
         $tab.closeDiagonosticTab();
-        return true;
+        break;
       case b.CLOSE_OTHER_TABS:
         $tab.closeOtherTabs();
-        return true;
+        break;
     }
   } else {
     console.log("handleOnMessage:", d);
