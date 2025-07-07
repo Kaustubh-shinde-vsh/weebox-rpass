@@ -1747,21 +1747,21 @@ var takeQuizService = new (function () {
           C.preventDefault();
         });
 
-        // UPDATED: Modern context menu prevention
+        // UPDATED: Modern context menu prevention - KEEP TOAST HERE ONLY
         $(document).on("contextmenu", function (e) {
           e.preventDefault();
           e.stopPropagation();
-          toast.error(l); // Your existing error message variable
+          toast.error(l); // KEEP THIS - shows toast message
           return false;
         });
 
-        // UPDATED: Prevent right mouse button events
+        // UPDATED: Prevent right mouse button events - NO TOAST
         $(document).on("mousedown mouseup", function (e) {
           if (e.button === 2) {
             // Right mouse button
             e.preventDefault();
             e.stopPropagation();
-            toast.error(l);
+            // REMOVED: toast.error(l); - NO TOAST HERE
             return false;
           }
         });
@@ -1775,21 +1775,17 @@ var takeQuizService = new (function () {
           }
         });
 
-        // Vanilla JS backup for context menu prevention
-        document.addEventListener(
-          "contextmenu",
-          function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-          },
-          true
-        );
+        // REMOVED: Vanilla JS backup - this was blocking the jQuery handler
+        // document.addEventListener("contextmenu", function (e) {
+        //   e.preventDefault();
+        //   e.stopPropagation();
+        //   return false;
+        // }, true);
 
-        // Override any existing context menu handlers
+        // Override any existing context menu handlers - NO TOAST
         document.oncontextmenu = function (e) {
           e.preventDefault();
-          toast.error(l);
+          // REMOVED: toast.error(l); - NO TOAST HERE
           return false;
         };
 
