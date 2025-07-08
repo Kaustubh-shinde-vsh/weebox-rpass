@@ -475,7 +475,7 @@ function getEnabledList(a) {
   chrome.management.getAll(function (b) {
     console.log("b-", b);
     let pluginFound = [];
-    for (i = 0; i < b.length; i++) {
+    for (let i = 0; i < b.length; i++) {
       if (b[i].enabled) {
         pluginFound.push(b[i]);
       }
@@ -822,6 +822,7 @@ function handleOnMessage(d, c, a) {
 }
 function handleOnRequest(c, a, b) {
   if (c.type == "request") {
+    // Handle normal request messages
     switch (c.title) {
       case "showReports":
         fetchReports(c, b);
@@ -881,13 +882,17 @@ function handleOnRequest(c, a, b) {
         fetchNotApplicableUsers(c, b);
         return true;
       case "disablePlugins":
+        console.log("Found disablePlugins in request case!");
         disablePluginList(c, b);
         return true;
       default:
         console.log("Invalid message type.");
     }
+  } else if (c.type == "disablePlugins") {
+    disablePluginList(c, b);
+    return true;
   } else {
-    console.log("handleOnRequest:", c);
+    console.log("handleOnRequest - unhandled message:", c);
   }
 }
 init();
